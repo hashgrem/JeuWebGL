@@ -27,6 +27,8 @@
 
 			//----------------------------------------------------------------------------------------------------- //
 
+			
+
 
 			function HandleKeyDown(event) { 
     			currentlyPressedKeys[event.keyCode] = true; 
@@ -121,7 +123,19 @@
 					
 						scene.add(object);
 					});
-				}			
+				}
+				
+			function PremierIndice() {
+				const geometry = new THREE.PlaneGeometry(15, 3);
+				const material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+				const plane = new THREE.Mesh( geometry, material );
+
+				var texturePremierIndice = new THREE.Texture();
+				var canvas = document.getElementById("monCanvas");
+				plane.position.set(10,10,-10)
+				plane.rotation.x = 1.8;
+				scene.add( plane );
+			}
 
 			function onWindowResize() {
               	camera.aspect = window.innerWidth / window.innerHeight;
@@ -185,6 +199,7 @@
 				requestAnimationFrame(Animer);
 				HandleKeys();
 				Afficher();
+				PremierIndice();
 				
 			}
 			
@@ -194,4 +209,6 @@
 		</script>
 
 	</body>
+
+	<canvas id="monCanvas">Félicitation ! Vous venez de trouver le premier indice.</canvas>
 </html>
