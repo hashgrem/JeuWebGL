@@ -10,30 +10,21 @@
 		<script src="../Libs/OBJLoader.js"></script>
 
 		<script>
+
 			var container; 
-            
 			var camera, scene, renderer;
-            var dax=0.002;
-			var radious = 10;
-			var phi = 10;
-			var theta = 10;
 
 			camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 2000 );
 
-			// déplacement avec les touches directionnelles.
 			var filter = 0;
 			var currentlyPressedKeys = {};
 
 			document.onkeydown = HandleKeyDown;
 			document.onkeyup = HandleKeyUp;
-			var mouseDown = document.onmousedown;
-			var mouseUp = document.onmouseup;
-			var mouseMove = document.onmousemove;
 
-			document.addEventListener ('mousedown', mouseDown, false);
-			document.addEventListener ('mousemove', mouseMove, false);
-			document.addEventListener ('mouseup', mouseUp, false); 
 
+			//----------------------------------------------------------------------------------------------------- //
+			
 
 			function HandleKeyDown(event) { 
     			currentlyPressedKeys[event.keyCode] = true; 
@@ -45,31 +36,43 @@
       				} 
     			} 
   			} 
-
-			// ---------------------------------------------------------------
-			
-  			function HandleKeyUp(event) { 
+	
+  			function HandleKeyUp(event) { // Création de l'evenement currentlyPressedKeys
     			currentlyPressedKeys[event.keyCode] = false; 
   			}
 
-			function HandleKeys() { 
-				
-				if (currentlyPressedKeys[37]) { 
+			function HandleKeys() { // Fonction qui gère la direction de la caméra. 
+
+				if ((currentlyPressedKeys[37]) && !(currentlyPressedKeys[17])) { 
       			// Flèche gauche
-      			camera.position.x -= 0.07; // rotate
+				  	camera.rotation.y+=0.02;
     			} 
-				if (currentlyPressedKeys[39]) { 
+				if ((currentlyPressedKeys[39]) && !(currentlyPressedKeys[17])) { 
 				// Flèche droite
-				camera.position.x += 0.07; 
+					camera.rotation.y-=0.02; 
 				} 
-				if (currentlyPressedKeys[38]) { 
+				if ((currentlyPressedKeys[38]) && !(currentlyPressedKeys[17])) { 
 				// Flèche haut
-				camera.position.y += 0.07; 
+					camera.position.y += 0.07; 
 				} 
-				if (currentlyPressedKeys[40]) { 
+				if ((currentlyPressedKeys[40]) && !(currentlyPressedKeys[17])) { 
 				// Flèche bas
-				camera.position.y -= 0.07; 
-				} 
+					camera.position.y -= 0.07; 
+				}
+
+				if ((currentlyPressedKeys[17]) && (currentlyPressedKeys[37])) // alt = 18 mais alt + fleche = raccourcis wind
+				{
+				// Flèche gauche + controle
+					console.log("Conrole + Flèche gauche pressée");
+					camera.position.x -= 0.07;
+				}
+
+				if ((currentlyPressedKeys[17]) && (currentlyPressedKeys[39])) 
+				{
+				// Flèche droite + controle
+					console.log("Conrole + Flèche droite pressée");
+					camera.position.x += 0.07;
+				}	
   			}
 
 			
