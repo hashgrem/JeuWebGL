@@ -22,6 +22,8 @@
 			document.onkeydown = HandleKeyDown;
 			document.onkeyup = HandleKeyUp;
 
+			var lumiere = new THREE.DirectionalLight( 0xf5df84, 1.0 );
+            
 
 			//----------------------------------------------------------------------------------------------------- //
 
@@ -41,11 +43,14 @@
     			currentlyPressedKeys[event.keyCode] = false; 
   			}
 
-			function HandleKeys() { // Fonction qui gère la direction de la caméra. 
+			function HandleKeys() { // Fonction qui gère la direction de la caméra.
+				
+				
 
 				if ((currentlyPressedKeys[37]) && !(currentlyPressedKeys[17])) { 
       			// Flèche gauche
 				  	camera.rotation.y+=0.02;
+					
     			} 
 				if ((currentlyPressedKeys[39]) && !(currentlyPressedKeys[17])) { 
 				// Flèche droite
@@ -65,6 +70,7 @@
 				// Flèche gauche + controle
 					console.log("Conrole + Flèche gauche pressée");
 					camera.position.x -= 0.07;
+					
 				}
 
 				if ((currentlyPressedKeys[17]) && (currentlyPressedKeys[39])) 
@@ -72,6 +78,7 @@
 				// Flèche droite + controle
 					console.log("Conrole + Flèche droite pressée");
 					camera.position.x += 0.07;
+					
 				}
 				
 				if ((currentlyPressedKeys[38]) && (currentlyPressedKeys[16])) 
@@ -87,12 +94,28 @@
 					console.log("Shit + Flèche bas pressée");
 					camera.rotation.x -= 0.008;
 				}
+
+				LightTorch();
+
+				
+
+				
   			}
+
+			function LightTorch() {
+				
+				var xLight = camera.position.x;
+            	
+				lumiere.position.set( 0,xLight,0);
+				lumiere.target.position.set(camera.position.x, camera.position.y, camera.position.z);
+				scene.add( lumiere );
+				//scene.add(new THREE.CameraHelper(camera)); 
+			}
 
 			
 
 			function onWindowResize() {
-              camera.aspect = window.innerWidth / window.innerHeight;
+              	camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 				renderer.setSize( window.innerWidth, window.innerHeight );
 			}
@@ -112,7 +135,7 @@
 				// scene
 				scene = new THREE.Scene();
 
-				var ambient = new THREE.AmbientLight( 0x163202 );
+				var ambient = new THREE.AmbientLight( 0x020600 );
 				scene.add( ambient );
 
 				// texture
