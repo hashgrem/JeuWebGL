@@ -46,7 +46,6 @@
 			function HandleKeys() { // Fonction qui gère la direction de la caméra.
 				
 				
-
 				if ((currentlyPressedKeys[37]) && !(currentlyPressedKeys[17])) { 
       			// Flèche gauche
 				  	camera.rotation.y+=0.02;
@@ -96,9 +95,7 @@
 				}
 
 				LightTorch();
-
-				
-
+				LampeTorche();			
 				
   			}
 
@@ -112,7 +109,19 @@
 				//scene.add(new THREE.CameraHelper(camera)); 
 			}
 
-			
+			//Chargement de la  lampe torche
+			function LampeTorche(){
+				
+					var manager = new THREE.LoadingManager();
+					var loaderTorch = new THREE.OBJLoader(manager);
+		
+					loaderTorch.load('../TranseptSud/Linterna.obj', function (object){
+						object.position.set(camera.position.x, camera.position.y+3,camera.position.z);
+						object.scale.set(0.05,0.05,0.05);
+					
+						scene.add(object);
+					});
+				}			
 
 			function onWindowResize() {
               	camera.aspect = window.innerWidth / window.innerHeight;
@@ -135,7 +144,7 @@
 				// scene
 				scene = new THREE.Scene();
 
-				var ambient = new THREE.AmbientLight( 0x020600 );
+				var ambient = new THREE.AmbientLight( 0x020600 ); // vraie couleur = 0x020600
 				scene.add( ambient );
 
 				// texture
@@ -166,9 +175,7 @@
               renderer = new THREE.WebGLRenderer();
               renderer.setSize( window.innerWidth, window.innerHeight );
               container.appendChild( renderer.domElement );
-              window.addEventListener( 'resize', onWindowResize, false );
-
-			  
+              window.addEventListener( 'resize', onWindowResize, false );	  
 
 			}
 			function Afficher() {
@@ -178,10 +185,11 @@
 				requestAnimationFrame(Animer);
 				HandleKeys();
 				Afficher();
+				
 			}
-
-           Init();
-           Animer();
+			
+			Init();
+           	Animer();
 
 		</script>
 
