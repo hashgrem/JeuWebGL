@@ -1,0 +1,149 @@
+<html>
+	<head>
+		<title>Transept de la cathédrale d'Amiens</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+
+	<body>
+		<script src="../Libs/three.min.js"></script>
+		<script src="../Libs/OBJLoader.js"></script>
+
+		<script>
+			var container; 
+            
+			var camera, scene, renderer;
+            var dax=0.002;
+			var radious = 10;
+			var phi = 10;
+			var theta = 10;
+
+			camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 2000 );
+
+			// déplacement avec les touches directionnelles.
+			var filter = 0;
+			var currentlyPressedKeys = {};
+
+			document.onkeydown = HandleKeyDown;
+			document.onkeyup = HandleKeyUp;
+			var mouseDown = document.onmousedown;
+			var mouseUp = document.onmouseup;
+			var mouseMove = document.onmousemove;
+
+			document.addEventListener ('mousedown', mouseDown, false);
+			document.addEventListener ('mousemove', mouseMove, false);
+			document.addEventListener ('mouseup', mouseUp, false); 
+
+
+			function HandleKeyDown(event) { 
+    			currentlyPressedKeys[event.keyCode] = true; 
+
+    			if (String.fromCharCode(event.keyCode) == "F") { 
+      				filter += 1; 
+      				if (filter == 3) { 
+        				filter = 0; 
+      				} 
+    			} 
+  			} 
+
+			// ---------------------------------------------------------------
+			
+  			function HandleKeyUp(event) { 
+    			currentlyPressedKeys[event.keyCode] = false; 
+  			}
+
+			function HandleKeys() { 
+				
+				if (currentlyPressedKeys[37]) { 
+      			// Flèche gauche
+      			camera.position.x -= 0.07; // rotate
+    			} 
+				if (currentlyPressedKeys[39]) { 
+				// Flèche droite
+				camera.position.x += 0.07; 
+				} 
+				if (currentlyPressedKeys[38]) { 
+				// Flèche haut
+				camera.position.y += 0.07; 
+				} 
+				if (currentlyPressedKeys[40]) { 
+				// Flèche bas
+				camera.position.y -= 0.07; 
+				} 
+  			}
+
+			
+
+			function onWindowResize() {
+              camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			function Init() {
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 2000 );
+                camera.rotation.z=0;
+                camera.rotation.x=2;
+                camera.rotation.y=0;
+                camera.position.z=-20;	//sol
+				camera.position.y=-12;	//recul
+				camera.position.x=0;	//droite/gauche
+
+				// scene
+				scene = new THREE.Scene();
+
+				var ambient = new THREE.AmbientLight( 0x163202 );
+				scene.add( ambient );
+
+				// texture
+
+				var manager = new THREE.LoadingManager();
+				manager.onProgress = function ( item, loaded, total ) {
+					console.log( item, loaded, total );
+				};
+
+				var texture = new THREE.Texture();
+
+				var loader = new THREE.ImageLoader( manager );
+				loader.load( '../TranseptSud/TranseptTexture4096.jpg', function ( image ) {
+					texture.image = image;
+					texture.needsUpdate = true;
+				} );
+
+				// Chargement du modèle
+				var loader = new THREE.OBJLoader( manager );
+				loader.load( '../TranseptSud/transeptSudBox.obj', function ( object ) {
+					object.traverse( function ( child ) {
+						if ( child instanceof THREE.Mesh ) {
+							child.material.map = texture;
+						}
+					} );
+					scene.add( object );
+				} );
+              renderer = new THREE.WebGLRenderer();
+              renderer.setSize( window.innerWidth, window.innerHeight );
+              container.appendChild( renderer.domElement );
+              window.addEventListener( 'resize', onWindowResize, false );
+
+			  
+
+			}
+			function Afficher() {
+                renderer.render(scene,camera);
+			}
+			function Animer() {
+				requestAnimationFrame(Animer);
+				HandleKeys();
+				Afficher();
+			}
+
+           Init();
+           Animer();
+
+		</script>
+
+	</body>
+</html>
