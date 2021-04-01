@@ -12,6 +12,7 @@
 		<img id="parchemin" src="../TranseptSud/parchemin.jpg">
 		<img id="info1" src="../TranseptSud/info1.png">
 		<img id="indice2" src="../TranseptSud/indice2.png">
+		<img id="indice3" src="../TranseptSud/indice3.png">
 
 		<!--<canvas id="monCanvas"></canvas>-->
 
@@ -188,6 +189,34 @@
 
 			}
 
+			function TroisiemeIndice() {
+
+				var canvas = document.createElement('canvas');
+    			var context = canvas.getContext('2d');
+				const loader = new THREE.TextureLoader();
+				var texture = new THREE.Texture(canvas) ;
+				texture.needsUpdate = true;
+
+				let image = document.getElementById('indice3');
+
+				image.addEventListener('load', function(){
+
+					context.drawImage(image, 0, 0, 300, 140);
+					var material = new THREE.MeshPhongMaterial( {color: 0xffffff, map : texture} );
+					var geometry = new THREE.PlaneGeometry( 0.5, 0.3);
+					plane = new THREE.Mesh( geometry, material );
+
+					plane.position.set(3, -8, camera.position.z);
+					plane.rotation.x = 1.5;
+					plane.rotation.y = 1.8;
+				
+					scene.add(plane);
+					
+				}, false);	
+
+
+			}
+
 			function PremiereInfo() {
 
 				var canvas = document.createElement('canvas');
@@ -333,6 +362,7 @@
 			function IndicesEtInfos() {
 				PremierIndice();
 				DeuxiemeIndice();
+				TroisiemeIndice();
 				PremiereInfo();
 			}
 			
