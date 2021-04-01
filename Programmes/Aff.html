@@ -9,9 +9,9 @@
 		<script src="../Libs/three.min.js"></script>
 		<script src="../Libs/OBJLoader.js"></script>
 		
-
 		<img id="parchemin" src="../TranseptSud/parchemin.jpg">
 		<img id="info1" src="../TranseptSud/info1.png">
+		<img id="indice2" src="../TranseptSud/indice2.png">
 
 		<!--<canvas id="monCanvas"></canvas>-->
 
@@ -161,6 +161,33 @@
 				}, false);	
 			}
 
+			function DeuxiemeIndice() {
+
+				var canvas = document.createElement('canvas');
+    			var context = canvas.getContext('2d');
+				const loader = new THREE.TextureLoader();
+				var texture = new THREE.Texture(canvas) ;
+				texture.needsUpdate = true;
+
+				let image = document.getElementById('indice2');
+
+				image.addEventListener('load', function(){
+
+					context.drawImage(image, 0, 0, 300, 140);
+					var material = new THREE.MeshPhongMaterial( {color: 0xffffff, map : texture} );
+					var geometry = new THREE.PlaneGeometry( 0.5, 0.3);
+					plane = new THREE.Mesh( geometry, material );
+
+					plane.position.set(-4.7, -9.8,camera.position.z);
+					plane.rotation.x = 1.5;
+					plane.rotation.y = 1.8;
+				
+					scene.add(plane);
+					
+				}, false);	
+
+			}
+
 			function PremiereInfo() {
 
 				var canvas = document.createElement('canvas');
@@ -197,7 +224,7 @@
 			}
 
 
-			function deuxiemeCam() {
+			function DeuxiemeCam() {
 
 				var deuxiemeCam = new THREE.OrthographicCamera();
 				var container = document.createElement( 'div' );
@@ -305,6 +332,7 @@
 
 			function IndicesEtInfos() {
 				PremierIndice();
+				DeuxiemeIndice();
 				PremiereInfo();
 			}
 			
@@ -312,7 +340,7 @@
            	Animer();
 			IndicesEtInfos();
 			test();
-			deuxiemeCam();
+			DeuxiemeCam();
 			
 
 		</script>
