@@ -11,6 +11,7 @@
 		
 
 		<img id="parchemin" src="../TranseptSud/parchemin.jpg">
+		<img id="info1" src="../TranseptSud/info1.png">
 
 		<!--<canvas id="monCanvas"></canvas>-->
 
@@ -144,7 +145,7 @@
 				image.addEventListener('load', function(){
 
 					context.drawImage(image, 0, 0, 300, 140);
-					var material = new THREE.MeshPhongMaterial( {color: 0xff0000, map : texture} );
+					var material = new THREE.MeshPhongMaterial( {color: 0xffffff, map : texture} );
 					var geometry = new THREE.PlaneGeometry( 0.5, 0.3);
 					//var lumiereIndice = new THREE.PointLight( 0xff0000, 1.0 );
 
@@ -158,6 +159,32 @@
 					//plane.add(lumiereIndice);
 
 				}, false);	
+			}
+
+			function PremiereInfo() {
+
+				var canvas = document.createElement('canvas');
+    			var context = canvas.getContext('2d');
+				const loader = new THREE.TextureLoader();
+				var texture = new THREE.Texture(canvas) ;
+				texture.needsUpdate = true;
+
+				let image = document.getElementById('info1');
+
+				image.addEventListener('load', function(){
+
+					context.drawImage(image, 0, 0, 300, 140);
+					var material = new THREE.MeshPhongMaterial( {color: 0xffffff, map : texture} );
+					var geometry = new THREE.PlaneGeometry( 0.5, 0.3);
+					plane = new THREE.Mesh( geometry, material );
+
+					plane.position.set(0, 0,camera.position.z);
+					plane.rotation.x = 1.8;
+				
+					scene.add(plane);
+					
+				}, false);	
+
 			}
 			
 
@@ -273,21 +300,25 @@
 			function Animer() {
 				requestAnimationFrame(Animer);
 				HandleKeys();
-				Afficher();
-				
-				
+				Afficher();			
+			}
+
+			function IndicesEtInfos() {
+				PremierIndice();
+				PremiereInfo();
 			}
 			
 			Init();
            	Animer();
-			PremierIndice();
+			IndicesEtInfos();
 			test();
 			deuxiemeCam();
+			
 
 		</script>
 
 		<style>
-			#parchemin {
+			img {
 				display: none;
 			} 
 		</style>
