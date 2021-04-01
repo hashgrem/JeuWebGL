@@ -8,6 +8,11 @@
 	<body>
 		<script src="../Libs/three.min.js"></script>
 		<script src="../Libs/OBJLoader.js"></script>
+		
+
+		<img id="parchemin" src="../TranseptSud/parchemin.jpg">
+
+		<!--<canvas id="monCanvas"></canvas>-->
 
 		<script>
 
@@ -15,7 +20,7 @@
 			var camera, scene, renderer;
 
 			camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 2000 );
-
+			
 			var filter = 0;
 			var currentlyPressedKeys = {};
 
@@ -26,8 +31,6 @@
             
 
 			//----------------------------------------------------------------------------------------------------- //
-
-			
 
 
 			function HandleKeyDown(event) { 
@@ -47,7 +50,8 @@
 
 			function HandleKeys() { // Fonction qui gère la direction de la caméra.
 				
-				
+				LimiterDeplacements();
+
 				if ((currentlyPressedKeys[37]) && !(currentlyPressedKeys[17])) { 
       			// Flèche gauche
 				  	camera.rotation.y+=0.02;
@@ -112,8 +116,10 @@
 			}
 
 			//Chargement de la  lampe torche
+			// problème de texture donc mis en commentaire
+
 			function LampeTorche(){
-				
+					/*
 					var manager = new THREE.LoadingManager();
 					var loaderTorch = new THREE.OBJLoader(manager);
 		
@@ -122,19 +128,88 @@
 						object.scale.set(0.05,0.05,0.05);
 					
 						scene.add(object);
-					});
+					}); */
 				}
 				
 			function PremierIndice() {
-				const geometry = new THREE.PlaneGeometry(15, 3);
-				const material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-				const plane = new THREE.Mesh( geometry, material );
 
-				var texturePremierIndice = new THREE.Texture();
-				var canvas = document.getElementById("monCanvas");
-				plane.position.set(10,10,-10)
-				plane.rotation.x = 1.8;
-				scene.add( plane );
+				var canvas = document.createElement('canvas');
+    			var context = canvas.getContext('2d');
+				const loader = new THREE.TextureLoader();
+				var texture = new THREE.Texture(canvas) ;
+				texture.needsUpdate = true;
+
+				let image = document.getElementById('parchemin');
+
+				image.addEventListener('load', function(){
+
+					context.drawImage(image, 0, 0, 300, 140);
+					var material = new THREE.MeshPhongMaterial( {color: 0xff0000, map : texture} );
+					var geometry = new THREE.PlaneGeometry( 0.5, 0.3);
+					//var lumiereIndice = new THREE.PointLight( 0xff0000, 1.0 );
+
+					plane = new THREE.Mesh( geometry, material );
+
+					plane.position.set(4, 10,camera.position.z);
+					plane.rotation.x = 1.8;
+					//lumiereIndice.position.set( 0, 8, camera.position.z);
+					
+					scene.add(plane);
+					//plane.add(lumiereIndice);
+
+				}, false);	
+			}
+			
+
+			function test()
+			{
+				var lumiereIndice = new THREE.PointLight( 0xffffff, 1.0 );
+				lumiereIndice.position.set( -25, 10, -80);
+
+				scene.add(lumiereIndice)
+			}
+
+
+			function deuxiemeCam() {
+
+				var deuxiemeCam = new THREE.OrthographicCamera();
+				var container = document.createElement( 'div' );
+				document.body.appendChild(container);
+
+				deuxiemeCam.left = window.innerWidth / -2;
+        		deuxiemeCam.right = window.innerWidth / 2;
+        		deuxiemeCam.top = window.innerHeight / 2;
+        		deuxiemeCam.bottom = window.innerHeight / -2;
+        		deuxiemeCam.near = 0.1;
+        		deuxiemeCam.far = 1500;
+
+				deuxiemeCam.updateProjectionMatrix();
+
+				
+				scene.add( deuxiemeCam );
+			}
+
+
+			function LimiterDeplacements() {
+				if(camera.position.x > 5.0 ) // Cordonnées récupérées dans le fichier TranseptSudBox
+				{
+					camera.position.x = 4.9;
+				}
+
+				if(camera.position.x < -5.0 )
+				{
+					camera.position.x = -5.0;
+				}
+
+				if(camera.position.y > 10.2 )
+				{
+					camera.position.y = 9.8;
+				}
+
+				if(camera.position.y < -10.2 )
+				{
+					camera.position.y = -9.8;
+				}	
 			}
 
 			function onWindowResize() {
@@ -149,7 +224,7 @@
 
 				camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 2000 );
                 camera.rotation.z=0;
-                camera.rotation.x=2;
+                camera.rotation.x=1.5;
                 camera.rotation.y=0;
                 camera.position.z=-20;	//sol
 				camera.position.y=-12;	//recul
@@ -199,16 +274,24 @@
 				requestAnimationFrame(Animer);
 				HandleKeys();
 				Afficher();
-				PremierIndice();
+				
 				
 			}
 			
 			Init();
            	Animer();
+			PremierIndice();
+			test();
+			deuxiemeCam();
 
 		</script>
 
+		<style>
+			#parchemin {
+				display: none;
+			} 
+		</style>
+
 	</body>
 
-	<canvas id="monCanvas">Félicitation ! Vous venez de trouver le premier indice.</canvas>
 </html>
